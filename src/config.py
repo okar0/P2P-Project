@@ -5,7 +5,7 @@ import math
 
 @dataclass
 class CommonCfg:
-    NumberofPreferredNeighbors: int
+    NumberOfPreferredNeighbors: int
     UnchokingInterval: int
     OptimisticUnchokingInterval: int
     FileName: str
@@ -59,3 +59,23 @@ def _validate_common(c: CommonCfg, path: Union[str, Path]) -> None:
         raise ValueError(f"{path}: FileSize and PieceSize must be > 0")
     if c.PieceSize > c.FileSize:
         raise ValueError(f"{path}: PieceSize cannot exceed FileSize")
+    
+    def load_peers(path: Union[str, Path]) -> list[PeerInfo]:
+
+        peers: list[PeerInfo] = []
+        path = Path(path)
+        with path.open("r", encoding="utf-8") as f:
+            for i, line in enumerate(f, 1):
+                if _is_comment_or_blank(line):
+                    continue
+                parts = line.split()
+                if len(parts) != 4:
+                    raise ValueError(f"{path}:{i}: expected 'id host port has_file'")
+                pid, host, port, has = parts
+                peers.append(PeerInfo(
+                    peer_id=int(pid),
+                    host=host,
+                    port=int(port),
+                    has_file=(has == "1")
+                ))
+        return peers
