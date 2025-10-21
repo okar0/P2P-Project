@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Union
+import math
 
 @dataclass
 class CommonCfg:
@@ -9,6 +11,17 @@ class CommonCfg:
     FileName: str
     FileSize: int
     PieceSize: int
+
+@dataclass
+class PeerInfo:
+    peer_id: int
+    host: str
+    port: int
+    has_file: bool
+
+def _is_comment_or_blank(line: str) -> bool:
+    s = line.strip()
+    return not s or s.startswith("#")
 
 def _kv(line: str):
     k, v = line.strip().split(maxsplit=1)
