@@ -1,6 +1,5 @@
 # P2P-Project
 
-Minimal P2P file sharing project for the **P2PFILESHARINGPROJ** spec.  
 Currently includes config parsing (`Common.cfg`, `PeerInfo.cfg`), basic logging, and the `peerProcess` entrypoint.
 
 ## Repo Layout
