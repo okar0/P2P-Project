@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.coverage*
+
+# Environments / tools
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+
+# Build / dist
+build/
+dist/
+
+# Project runtime artifacts
+log_peer_*.log
+peer_*/            # per-peer runtime folders (generated)
