@@ -1,12 +1,15 @@
 
 import struct
 
+# Constants for handshake
 HANDSHAKE_HEADER = b'P2PFILESHARINGPROJ'
 ZERO_BITS = b'\x00' * 10
 
+# Creates handsake
 def create_handshake(peerID):
     return HANDSHAKE_HEADER + ZERO_BITS + struct.pack("!I", peerID)
 
+# Parses through handskae making sure its valid then returning ID number
 def read_handshake(data):
     if len(data) != 32:
         raise ValueError("Invalid Handshake Length")
