@@ -19,6 +19,7 @@ class PeerInfo:
     port: int
     has_file: bool
 
+
 def _is_comment_or_blank(line: str) -> bool:
     s = line.strip()
     return not s or s.startswith("#")
@@ -60,22 +61,33 @@ def _validate_common(c: CommonCfg, path: Union[str, Path]) -> None:
     if c.PieceSize > c.FileSize:
         raise ValueError(f"{path}: PieceSize cannot exceed FileSize")
     
-    def load_peers(path: Union[str, Path]) -> list[PeerInfo]:
+def load_peers(path: str | Path) -> list[PeerInfo]:
+    peers: list[PeerInfo] = []
+    with open(path, "r", encoding="utf-8") as f:
+        for i, line in enumerate(f, 1):
+            if _is_comment_or_blank(line):
+                continue
+            parts = line.split()
+            if len(parts) != 4:
+                raise ValueError(f"{path}:{i}: expected 'peerID host port hasFile'")
+            pid_s, host, port_s, has_s = parts
+            try:
+                pid  = int(pid_s)
+                port = int(port_s)
+                has  = (int(has_s) == 1)
+            except ValueError:
+                raise ValueError(f"{path}:{i}: peerID/port/hasFile must be integers")
+            if not (1 <= port <= 65535):
+                raise ValueError(f"{path}:{i}: port {port} out of range")
+            peers.append(PeerInfo(pid, host, port, has))
+    _validate_peers(peers, path)
+    return peers
 
-        peers: list[PeerInfo] = []
-        path = Path(path)
-        with path.open("r", encoding="utf-8") as f:
-            for i, line in enumerate(f, 1):
-                if _is_comment_or_blank(line):
-                    continue
-                parts = line.split()
-                if len(parts) != 4:
-                    raise ValueError(f"{path}:{i}: expected 'id host port has_file'")
-                pid, host, port, has = parts
-                peers.append(PeerInfo(
-                    peer_id=int(pid),
-                    host=host,
-                    port=int(port),
-                    has_file=(has == "1")
-                ))
-        return peers
+def _validate_peers(peers: list[PeerInfo], path: str | Path) -> None:
+    ids = [p.peer_id for p in peers]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{path}: duplicate peer_id detected")
+    if sum(p.has_file for p in peers) > 1:
+        raise ValueError(f"{path}: more than one peer marked has_file=1")
+    if not peers:
+        raise ValueError(f"{path}: no peers defined")
