@@ -18,6 +18,7 @@ class Message:
         self.message_type = message_type
         self.payload = payload or b""
 
+    # Encode and decode functions
     def encode(self):
         length = len(self.payload) + 1
         return struct.pack("!IB", length, self.message_type) + self.payload
@@ -62,10 +63,3 @@ def make_request(piece_index):
 def make_piece(piece_index, data):
     payload = struct.pack("!I", piece_index) + data
     return Message(Message.PIECE, payload).encode()
-
-#TESTING
-if __name__ == "__main__":
-    encoded = make_not_interested()
-    decoded = Message.decode(encoded)
-    print("Encoded:", encoded)
-    print("Decoded:", decoded)
