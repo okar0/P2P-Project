@@ -290,7 +290,7 @@ class Peer:
         Returns {peer_id: bytes_downloaded_in_window} and resets the counters.
         """
         stats: Dict[int, int] = {}
-        for pid, neighbor in self.neighbors.items():
+        for pid, neighbor in list(self.neighbors.items()):
             stats[pid] = neighbor.download_bytes_window
             neighbor.download_bytes_window = 0
         return stats
