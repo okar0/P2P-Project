@@ -1,5 +1,5 @@
 import socket
-from messages import Message
+from p2p.messages import Message
 
 class Connection:
     def __init__(self, host, port, peer_id, sock=None):
