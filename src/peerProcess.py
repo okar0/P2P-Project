@@ -127,28 +127,27 @@ class PeerProcess:
                 # only start shutdown timer if:
                 # 1) we are complete AND 2) we've had at least one neighbor
                 if self.peer.is_complete() and had_any_neighbor:
-                    if completion_time is None:
-                        completion_time = time.time()
-                        self.logger.log(
-                            f"Peer {self.my_id} completed download. "
-                            f"Waiting {shutdown_delay}s before shutdown..."
-                        )
 
-                    elapsed = time.time() - completion_time
-                    if elapsed > shutdown_delay:
-                        any_interested = False
-                        for neighbor in self.peer.neighbors.values():
-                            if neighbor.peer_interested_me:
-                                any_interested = True
-                                break
+                    # NEW shutdown trigger: check if ALL peers have the complete file
+                    if self.check_all_peers_complete():
 
-                        if not any_interested:
-                            self.logger.log("All peers complete or not interested. Shutting down.")
+                        if completion_time is None:
+                            completion_time = time.time()
+                            self.logger.log(
+                                f"Peer {self.my_id} detected all peers complete. "
+                                f"Waiting {shutdown_delay}s before shutdown..."
+                            )
+
+                        elapsed = time.time() - completion_time
+                        if elapsed > shutdown_delay:
+                            self.logger.log("All peers have completed the download. Shutting down.")
                             print(f"\n[Peer {self.my_id}] All done! Shutting down...")
                             break
-                        else:
-                            # someone is still interested → reset timer
-                            completion_time = time.time()
+
+                    else:
+                        # If not all peers are complete, reset timer
+                        completion_time = None
+
 
         except KeyboardInterrupt:
             print(f"\n[Peer {self.my_id}] Interrupted by user")
