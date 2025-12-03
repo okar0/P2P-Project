@@ -114,16 +114,25 @@ class PeerProcess:
 
         completion_time = None
         shutdown_delay = 10
+        had_any_neighbor = False  # <-- new flag
 
         try:
             while self.running:
                 time.sleep(2)
 
-                if self.peer.is_complete():
+                # track if we've ever had at least one neighbor
+                if self.peer.neighbors:
+                    had_any_neighbor = True
+
+                # only start shutdown timer if:
+                # 1) we are complete AND 2) we've had at least one neighbor
+                if self.peer.is_complete() and had_any_neighbor:
                     if completion_time is None:
                         completion_time = time.time()
                         self.logger.log(
-                            f"Peer {self.my_id} completed download. Waiting {shutdown_delay}s before shutdown...")
+                            f"Peer {self.my_id} completed download. "
+                            f"Waiting {shutdown_delay}s before shutdown..."
+                        )
 
                     elapsed = time.time() - completion_time
                     if elapsed > shutdown_delay:
@@ -138,6 +147,7 @@ class PeerProcess:
                             print(f"\n[Peer {self.my_id}] All done! Shutting down...")
                             break
                         else:
+                            # someone is still interested → reset timer
                             completion_time = time.time()
 
         except KeyboardInterrupt:

@@ -22,3 +22,9 @@ dist/
 # Project runtime artifacts
 log_peer_*.log
 peer_*/            # per-peer runtime folders (generated)
+src/peer_1001/TheFile.dat
+src/peer_1002/TheFile.dat
+src/peer_1003/TheFile.dat
+src/peer_1004/TheFile.dat
+src/peer_1005/TheFile.dat
+src/peer_1006/TheFile.dat
