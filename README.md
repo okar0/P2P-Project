@@ -5,10 +5,10 @@ Currently includes config parsing (`Common.cfg`, `PeerInfo.cfg`), basic logging,
 ## Repo Layout
 P2P-Project/
 - .gitignore
-- Common.cfg
-- PeerInfo.cfg
 - peer_1001/  peer_1002/  peer_1003/   (created at runtime)
 - src/
+- Common.cfg
+- PeerInfo.cfg
   - peerProcess.py
   - p2p/
     - __init__.py
