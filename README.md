@@ -22,7 +22,7 @@ P2P-Project/
     - scheduler.py
     - storage.py
 
-> **Note:** Keep `Common.cfg` and `PeerInfo.cfg` in the **repo root** (same folder as `.git/`).
+> **Note:** Keep `Common.cfg` and `PeerInfo.cfg` in the **src** directory (same folder as `.git/`).
 
 ## Prerequisites
 - Python 3.10+
